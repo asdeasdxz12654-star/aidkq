@@ -24,7 +24,7 @@
     "maxExpectedPerTc": 4,
     "confirmedByUser": false
   },
-  "idAbbreviations": { "3D방 꾸미기 온보딩": "3D", "전체 메뉴": "MENU", "신규 3D방 편집": "ED", "내 3D방 목록": "LIST" },
+  "idAbbreviations": { "3D방 꾸미기 온보딩": "3D", "전체 메뉴": "MENU", "신규 3D방 편집": "ED", "내 3D방 목록": "LIST", "전체 흐름": "FLOW" },
   "terminology": {
     "탭/클릭/터치": "선택",
     "팝업/다이얼로그": "팝업",
