@@ -57,8 +57,10 @@ for (const t of TC) {
 
   // R07 기대결과 과다
   if (t.expected.length > 5) add(t.id, "R07", "경고", `기대결과 ${t.expected.length}개 (5 초과)`);
-  if (t.expected.length > profile.granularity.maxExpectedPerTc)
-    add(t.id, "R07", "경고", `기대결과 ${t.expected.length}개 — 양식 프로파일 maxExpectedPerTc(${profile.granularity.maxExpectedPerTc}) 초과`);
+  const ex = (profile.granularity.exceptions || []).find((e) => e.technique === t.technique);
+  const maxExp = ex ? ex.maxExpectedPerTc : profile.granularity.maxExpectedPerTc;
+  if (t.expected.length > maxExp)
+    add(t.id, "R07", "경고", `기대결과 ${t.expected.length}개 — 양식 프로파일 maxExpectedPerTc(${maxExp}${ex ? `, ${t.technique} 예외` : ""}) 초과`);
 
   // R08 ID
   if (seen.has(t.id)) add(t.id, "R08", "오류", "TC ID 중복");

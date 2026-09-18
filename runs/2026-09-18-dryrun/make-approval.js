@@ -91,7 +91,7 @@ ${qm.map((m) => `| ${m.screen} | ${m.code} | ${m.reason} | ${m.conditionId || "�
 - 예외 체크리스트: ${new Set(d.exceptionMatrix.map((m) => m.screen)).size}개 화면 × 11항목 = ${d.exceptionMatrix.length}건 판정, 질의필요 ${qm.length}건
 
 ## 5. 정답지 대비 커버리지 (참고 — 대응은 수작업)
-정답지 TC 22건 모두 조건으로 도출됐다 (LIST-002는 조건 2개로 분리).
+정답지 TC 23건 모두 조건으로 도출됐다 (LIST-002는 조건 2개로 분리).
 
 | 정답지 | 대응 조건 |
 |---|---|

@@ -22,7 +22,14 @@
     "unit": "화면 요소 단위 분리",
     "avgExpectedPerTc": 2.1,
     "maxExpectedPerTc": 4,
-    "confirmedByUser": false
+    "confirmedByUser": false,
+    "exceptions": [
+      {
+        "technique": "유스케이스",
+        "maxExpectedPerTc": 8,
+        "note": "끝-끝 흐름 TC는 단계마다 기대결과가 붙어 4개를 넘는다. 나누면 흐름 검증이 깨진다. 2026-09-19 결정"
+      }
+    ]
   },
   "idAbbreviations": { "3D방 꾸미기 온보딩": "3D", "전체 메뉴": "MENU", "신규 3D방 편집": "ED", "내 3D방 목록": "LIST", "전체 흐름": "FLOW" },
   "terminology": {
