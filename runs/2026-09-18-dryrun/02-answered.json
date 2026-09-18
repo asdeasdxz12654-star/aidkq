@@ -1,0 +1,671 @@
+{
+  "document": {
+    "title": "[가상] 홈데코 앱 — 3D방 꾸미기 기획서",
+    "version": "v1.0",
+    "date": "2026-09-10",
+    "changes": [
+      "v1.0 최초 작성"
+    ]
+  },
+  "scope": {
+    "platforms": [
+      "AOS",
+      "iOS"
+    ],
+    "minVersions": {
+      "app": "6.12.0",
+      "AOS": "9 (규칙집: ENV-01)",
+      "iOS": "15 (규칙집: ENV-01)"
+    },
+    "outOfScope": [
+      "태블릿 레이아웃",
+      "웹",
+      "가구 배치 기능(v1.1 예정)"
+    ]
+  },
+  "screens": [
+    {
+      "reqId": "REQ-01",
+      "screen": "전체 메뉴",
+      "entryPaths": [],
+      "elements": [
+        {
+          "id": "E-01",
+          "type": "button",
+          "label": "3D방 꾸미기",
+          "action": "로그인·최초: 온보딩 이동 / 로그인·재진입: 내 3D방 목록 이동 / 비로그인: 로그인 화면 이동",
+          "enabledWhen": "",
+          "source": "p.1, p.2"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "C-01",
+          "name": "로그인 여부",
+          "values": [
+            "로그인",
+            "비로그인"
+          ],
+          "effect": "비로그인 시 로그인 화면 이동, 로그인 완료 후 온보딩 복귀",
+          "source": "p.1, p.2"
+        },
+        {
+          "id": "C-02",
+          "name": "3D방 꾸미기 진입 이력",
+          "values": [
+            "최초",
+            "재진입"
+          ],
+          "effect": "최초 진입 시 온보딩 노출. 재진입 동작 미정의",
+          "source": "p.2"
+        }
+      ],
+      "inputRules": [],
+      "states": [],
+      "timers": [],
+      "transitions": [
+        {
+          "trigger": "E-01 선택 (로그인, 최초)",
+          "to": "3D방 꾸미기 온보딩",
+          "source": "p.2"
+        },
+        {
+          "trigger": "E-01 선택 (비로그인)",
+          "to": "로그인",
+          "source": "p.2"
+        },
+        {
+          "trigger": "E-01 선택 (로그인, 재진입)",
+          "to": "내 3D방 목록",
+          "source": "질의 Q-01 답변"
+        }
+      ],
+      "data": [],
+      "integrations": [],
+      "openQuestions": [
+        "Q-01"
+      ],
+      "layout": [
+        {
+          "target": "E-01 3D방 꾸미기 메뉴",
+          "rule": "\"인테리어 상담\" 메뉴 바로 아래",
+          "source": "p.1"
+        }
+      ]
+    },
+    {
+      "reqId": "REQ-02",
+      "screen": "3D방 꾸미기 온보딩",
+      "entryPaths": [
+        "전체 메뉴 > 3D방 꾸미기 (최초 진입)",
+        "로그인 완료 후 복귀"
+      ],
+      "elements": [
+        {
+          "id": "E-02",
+          "type": "text",
+          "label": "스마트폰에서 손쉽게 내 방을 계획해보세요",
+          "source": "p.2"
+        },
+        {
+          "id": "E-03",
+          "type": "button",
+          "label": "3D 방꾸미기 시작하기",
+          "action": "신규 3D방 편집 화면 이동 + 튜토리얼(1/5) 노출",
+          "source": "p.2"
+        },
+        {
+          "id": "E-04",
+          "type": "button",
+          "label": "닫기(X)",
+          "action": "전체 메뉴로 이동",
+          "source": "p.2"
+        }
+      ],
+      "conditions": [],
+      "inputRules": [],
+      "states": [],
+      "timers": [
+        {
+          "event": "버튼 미선택 시 신규 3D방 편집 화면 자동 이동",
+          "seconds": 5,
+          "source": "p.2"
+        },
+        {
+          "event": "5초 이전 E-03 선택 시 타이머 취소 (편집 화면 1회 이동)",
+          "seconds": null,
+          "source": "질의 Q-02 답변"
+        },
+        {
+          "event": "백그라운드 복귀 시 5초 타이머 처음부터 재시작",
+          "seconds": 5,
+          "source": "질의 Q-09 답변 / 규칙집: BUG-01"
+        }
+      ],
+      "transitions": [
+        {
+          "trigger": "E-03 선택",
+          "to": "신규 3D방 편집",
+          "source": "p.2"
+        },
+        {
+          "trigger": "5초 경과",
+          "to": "신규 3D방 편집",
+          "source": "p.2"
+        },
+        {
+          "trigger": "E-04 선택",
+          "to": "전체 메뉴",
+          "source": "p.2"
+        },
+        {
+          "trigger": "뒤로가기(하드웨어·제스처)",
+          "to": "전체 메뉴 (다음 진입도 최초 진입)",
+          "source": "질의 Q-10 답변"
+        }
+      ],
+      "data": [],
+      "integrations": [],
+      "openQuestions": [
+        "Q-02",
+        "Q-09",
+        "Q-10"
+      ]
+    },
+    {
+      "reqId": "REQ-03",
+      "screen": "신규 3D방 편집",
+      "entryPaths": [
+        "온보딩 > 3D 방꾸미기 시작하기",
+        "온보딩 5초 자동 이동",
+        "내 3D방 목록 > 새 방 만들기"
+      ],
+      "elements": [
+        {
+          "id": "E-05",
+          "type": "popup",
+          "label": "튜토리얼 (1/5 ~ 5/5)",
+          "action": "계정당 1회, 편집 화면 위 딤 처리 + 말풍선, 상단 단계 표시 \"1/5\"",
+          "source": "p.3 / 질의 Q-03 답변, 질의 Q-13 답변"
+        },
+        {
+          "id": "E-06",
+          "type": "button",
+          "label": "다음",
+          "action": "튜토리얼 다음 단계 (1/5 ~ 4/5에서 제공)",
+          "source": "p.3"
+        },
+        {
+          "id": "E-07",
+          "type": "button",
+          "label": "완료",
+          "action": "튜토리얼 닫힘",
+          "source": "p.3 / 질의 Q-14 답변"
+        },
+        {
+          "id": "E-08",
+          "type": "button",
+          "label": "건너뛰기",
+          "action": "튜토리얼 닫힘, 이후 재노출 안 함",
+          "source": "p.3 / 질의 Q-04 답변"
+        },
+        {
+          "id": "E-09",
+          "type": "input",
+          "label": "방 이름을 입력해주세요",
+          "action": "방 이름 입력 (플레이스홀더)",
+          "source": "p.3"
+        },
+        {
+          "id": "E-10",
+          "type": "button",
+          "label": "저장",
+          "action": "방 저장",
+          "enabledWhen": "공백 외 문자가 1자 이상 입력된 경우. 저장 처리 중 비활성",
+          "source": "p.3 / 질의 Q-11 답변, 질의 Q-12 답변"
+        },
+        {
+          "id": "E-11",
+          "type": "toast",
+          "label": "방이 저장되었습니다",
+          "action": "저장 성공 시 노출",
+          "source": "p.3"
+        },
+        {
+          "id": "E-16",
+          "type": "toast",
+          "label": "저장에 실패했어요. 다시 시도해주세요",
+          "action": "저장 실패 시 노출, 입력한 방 이름 유지",
+          "source": "질의 Q-06 답변"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "C-03",
+          "name": "편집 화면 진입 이력",
+          "values": [
+            "최초",
+            "재진입"
+          ],
+          "effect": "계정당 최초 1회 튜토리얼 노출",
+          "source": "p.3 / 질의 Q-13 답변"
+        },
+        {
+          "id": "C-04",
+          "name": "방 이름 입력 여부",
+          "values": [
+            "입력",
+            "미입력"
+          ],
+          "effect": "저장 버튼 활성/비활성",
+          "source": "p.3"
+        },
+        {
+          "id": "C-05",
+          "name": "저장 결과",
+          "values": [
+            "성공",
+            "실패"
+          ],
+          "effect": "성공: 토스트 + 2초 후 목록 이동 / 실패: E-16 토스트, 방 이름 유지",
+          "source": "p.3"
+        }
+      ],
+      "inputRules": [
+        {
+          "elementId": "E-09",
+          "min": 1,
+          "max": 20,
+          "allowed": "한글·영문·숫자·공백 (허용 외 문자는 입력 차단, 공백만 입력 시 저장 불가)",
+          "required": true,
+          "source": "p.3 / 질의 Q-08 답변, 질의 Q-12 답변"
+        }
+      ],
+      "states": [
+        {
+          "name": "success",
+          "behavior": "\"방이 저장되었습니다\" 토스트 노출 2초 후 내 3D방 목록 이동",
+          "message": "방이 저장되었습니다",
+          "source": "p.3"
+        },
+        {
+          "name": "error",
+          "behavior": "토스트 노출, 입력한 방 이름 유지",
+          "message": "저장에 실패했어요. 다시 시도해주세요",
+          "source": "p.3 / 질의 Q-06 답변"
+        }
+      ],
+      "timers": [
+        {
+          "event": "저장 성공 후 목록 이동",
+          "seconds": 2,
+          "source": "p.3 / 질의 Q-05 답변 / 규칙집: UI-01"
+        }
+      ],
+      "transitions": [
+        {
+          "trigger": "저장 성공",
+          "to": "내 3D방 목록",
+          "source": "p.3"
+        },
+        {
+          "trigger": "뒤로가기",
+          "to": "전체 메뉴 (온보딩 거치지 않음)",
+          "source": "p.3"
+        }
+      ],
+      "data": [
+        {
+          "target": "방(이름)",
+          "savedWhen": "저장 버튼 선택",
+          "retention": "기존 방 편집 후 저장 시 덮어쓰기, 이름 중복 허용",
+          "source": "p.3 / 질의 Q-16 답변"
+        }
+      ],
+      "integrations": [],
+      "openQuestions": [
+        "Q-03",
+        "Q-04",
+        "Q-05",
+        "Q-06",
+        "Q-08",
+        "Q-11",
+        "Q-12",
+        "Q-13",
+        "Q-14"
+      ]
+    },
+    {
+      "reqId": "REQ-04",
+      "screen": "내 3D방 목록",
+      "entryPaths": [
+        "신규 3D방 편집 > 저장 성공",
+        "전체 메뉴 > 3D방 꾸미기 (재진입)"
+      ],
+      "elements": [
+        {
+          "id": "E-12",
+          "type": "list",
+          "label": "방 목록 (썸네일, 방 이름, 마지막 수정일 YYYY.MM.DD)",
+          "action": "항목 선택 시 해당 방 편집 화면 이동",
+          "source": "p.4"
+        },
+        {
+          "id": "E-13",
+          "type": "button",
+          "label": "새 방 만들기",
+          "action": "신규 3D방 편집 화면 이동 (10개 보유 시 팝업)",
+          "source": "p.4"
+        },
+        {
+          "id": "E-14",
+          "type": "text",
+          "label": "아직 만든 방이 없어요",
+          "action": "저장한 방이 없을 때 노출",
+          "source": "p.4"
+        },
+        {
+          "id": "E-15",
+          "type": "popup",
+          "label": "방은 최대 10개까지 만들 수 있어요",
+          "action": "10개 보유 상태에서 새 방 만들기 선택 시",
+          "source": "p.4"
+        }
+      ],
+      "conditions": [
+        {
+          "id": "C-06",
+          "name": "보유 방 수",
+          "values": [
+            "0개",
+            "1~9개",
+            "10개"
+          ],
+          "effect": "0개: 빈 목록 / 10개: 생성 제한 팝업",
+          "source": "p.4"
+        }
+      ],
+      "inputRules": [],
+      "states": [
+        {
+          "name": "empty",
+          "behavior": "\"아직 만든 방이 없어요\" 문구와 \"새 방 만들기\" 버튼 노출",
+          "message": "아직 만든 방이 없어요",
+          "source": "p.4"
+        },
+        {
+          "name": "error",
+          "behavior": "방 선택 시 로딩 실패하면 팝업과 \"다시 시도\" 버튼 노출",
+          "message": "네트워크 연결을 확인해주세요",
+          "source": "질의 Q-15 답변"
+        }
+      ],
+      "timers": [],
+      "transitions": [
+        {
+          "trigger": "E-13 선택 (9개 이하)",
+          "to": "신규 3D방 편집",
+          "source": "p.4"
+        },
+        {
+          "trigger": "E-12 항목 선택",
+          "to": "해당 방 편집",
+          "source": "p.4"
+        }
+      ],
+      "data": [],
+      "integrations": [],
+      "openQuestions": [
+        "Q-07",
+        "Q-08",
+        "Q-15",
+        "Q-16"
+      ],
+      "layout": [
+        {
+          "target": "E-12 정렬",
+          "rule": "최근 수정순(내림차순)",
+          "source": "질의 Q-07 답변"
+        },
+        {
+          "target": "E-12 방 이름",
+          "rule": "15자 초과 시 말줄임(…)",
+          "source": "p.4 / 질의 Q-08 답변"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-01",
+      "pattern": "CND",
+      "reqId": "REQ-01",
+      "quote": "전체 메뉴 > 3D방 꾸미기 선택 시, 최초 진입이면 온보딩 화면을 노출한다.",
+      "source": "p.2",
+      "question": "3D방 꾸미기 재진입 시(최초 진입이 아닐 때) 어느 화면으로 이동하나요?",
+      "options": [
+        "내 3D방 목록",
+        "신규 3D방 편집",
+        "온보딩 재노출"
+      ],
+      "blocking": true,
+      "status": "answered",
+      "answer": "재진입 시 온보딩 없이 내 3D방 목록으로 이동한다."
+    },
+    {
+      "id": "Q-02",
+      "pattern": "CND",
+      "reqId": "REQ-02",
+      "quote": "버튼을 선택하지 않으면 5초 후 신규 3D방 편집 화면으로 자동 이동한다.",
+      "source": "p.2",
+      "question": "5초 이전에 \"3D 방꾸미기 시작하기\"를 선택하면 자동 이동 타이머가 취소되나요? (편집 화면 중복 진입 여부)",
+      "options": [
+        "타이머 취소, 1회만 이동",
+        "기타"
+      ],
+      "blocking": true,
+      "status": "answered",
+      "answer": "5초 이전에 버튼 선택 시 타이머는 취소되고 편집 화면으로 1회만 이동한다."
+    },
+    {
+      "id": "Q-03",
+      "pattern": "AMB",
+      "reqId": "REQ-03",
+      "quote": "편집 화면 최초 진입 시 튜토리얼을 정상 노출한다.",
+      "source": "p.3",
+      "question": "튜토리얼은 어떤 형태로 노출되나요? (전체 화면/딤+말풍선 등, 단계 표시 위치와 형식)",
+      "options": [],
+      "blocking": true,
+      "status": "answered",
+      "answer": "편집 화면 위에 딤 처리 + 말풍선으로 노출되고, 상단에 단계 \"1/5\"가 표시된다."
+    },
+    {
+      "id": "Q-04",
+      "pattern": "CND",
+      "reqId": "REQ-03",
+      "quote": "\"건너뛰기\" 선택 시 튜토리얼이 닫힌다.",
+      "source": "p.3",
+      "question": "건너뛰기로 닫은 뒤 편집 화면에 다시 진입하면 튜토리얼이 다시 노출되나요? \"완료\" 선택 후와 같은 처리인가요?",
+      "options": [
+        "재노출 안 함(완료와 동일)",
+        "다음 진입 시 재노출"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "건너뛰기 후에는 튜토리얼을 다시 노출하지 않는다(완료와 동일)."
+    },
+    {
+      "id": "Q-05",
+      "pattern": "NUM",
+      "reqId": "REQ-03",
+      "quote": "\"방이 저장되었습니다\" 토스트를 노출하고 잠시 후 내 3D방 목록으로 이동한다.",
+      "source": "p.3",
+      "question": "저장 성공 후 몇 초 뒤 목록으로 이동하나요? 규칙집 UI-01(토스트 2초)과 같게 보면 되나요?",
+      "options": [
+        "토스트 2초 후 이동",
+        "즉시 이동, 토스트는 목록 화면에서 노출"
+      ],
+      "blocking": true,
+      "status": "answered",
+      "answer": "토스트 노출 2초 후 내 3D방 목록으로 이동한다."
+    },
+    {
+      "id": "Q-06",
+      "pattern": "TXT",
+      "reqId": "REQ-03",
+      "quote": "저장 실패 시 에러 메시지를 노출한다.",
+      "source": "p.3",
+      "question": "저장 실패 시 에러 문구 원문과 노출 형태(토스트/팝업)는 무엇인가요? 실패 후 입력한 방 이름은 유지되나요?",
+      "options": [],
+      "blocking": true,
+      "status": "answered",
+      "answer": "토스트 \"저장에 실패했어요. 다시 시도해주세요\"를 노출하고, 입력한 방 이름은 유지한다."
+    },
+    {
+      "id": "Q-07",
+      "pattern": "REF",
+      "reqId": "REQ-04",
+      "quote": "정렬은 기존 \"스크랩북\" 목록과 동일하다.",
+      "source": "p.4",
+      "question": "\"스크랩북\" 목록의 정렬 기준은 무엇인가요? (최근 수정순/생성순/이름순, 오름·내림)",
+      "options": [
+        "최근 수정순",
+        "최근 생성순",
+        "이름순"
+      ],
+      "blocking": true,
+      "status": "answered",
+      "answer": "최근 수정순(내림차순)."
+    },
+    {
+      "id": "Q-08",
+      "pattern": "CON",
+      "reqId": "REQ-03",
+      "quote": "p.3 \"1~20자\" / p.4 \"방 이름(최대 15자)\"",
+      "source": "p.3, p.4",
+      "question": "방 이름 최대 길이는 20자인가요, 15자인가요? p.4의 15자가 목록 표시 제한(말줄임)이라면 초과분 표시 방식은 무엇인가요?",
+      "options": [
+        "입력 20자, 목록 15자 초과 시 말줄임",
+        "입력 15자로 통일"
+      ],
+      "blocking": true,
+      "status": "answered",
+      "answer": "입력은 최대 20자. 목록에서는 15자를 초과하면 말줄임(…)으로 표시한다."
+    },
+    {
+      "id": "Q-09",
+      "pattern": "EXC",
+      "reqId": "REQ-02",
+      "quote": "",
+      "source": "p.2 / 규칙집: BUG-01",
+      "question": "온보딩 화면에서 앱을 백그라운드로 전환했다 복귀하면 5초 타이머는 어떻게 되나요?",
+      "options": [
+        "처음부터 다시 셈",
+        "남은 시간 이어서",
+        "복귀 즉시 이동"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "백그라운드에서 복귀하면 5초 타이머를 처음부터 다시 센다."
+    },
+    {
+      "id": "Q-10",
+      "pattern": "EXC",
+      "reqId": "REQ-02",
+      "quote": "닫기(X) 선택 시 전체 메뉴로 돌아간다.",
+      "source": "p.2",
+      "question": "온보딩 화면에서 하드웨어·제스처 뒤로가기 시 닫기(X)와 동일하게 전체 메뉴로 이동하나요? 이후 재진입은 '최초 진입'으로 보나요?",
+      "options": [
+        "X와 동일, 최초 진입 유지",
+        "X와 동일, 재진입으로 처리"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "닫기(X)와 동일하게 전체 메뉴로 이동하며, 다음 진입도 최초 진입으로 처리한다."
+    },
+    {
+      "id": "Q-11",
+      "pattern": "EXC",
+      "reqId": "REQ-03",
+      "quote": "",
+      "source": "p.3",
+      "question": "\"저장\" 버튼을 연속으로 선택하면 방이 중복 저장되나요? 처리 중 버튼 상태는 어떻게 되나요?",
+      "options": [
+        "처리 중 비활성, 1개만 저장"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "저장 처리 중에는 저장 버튼이 비활성화되어 방은 1개만 저장된다."
+    },
+    {
+      "id": "Q-12",
+      "pattern": "CND",
+      "reqId": "REQ-03",
+      "quote": "방 이름 입력창 (필수), 1~20자, 한글·영문·숫자·공백 허용",
+      "source": "p.3",
+      "question": "허용 외 문자(특수문자·이모지) 입력 시 입력 자체가 차단되나요, 오류 문구가 노출되나요? 공백만 입력하거나 앞뒤 공백이 있으면 어떻게 처리하나요?",
+      "options": [
+        "입력 차단, 공백만은 저장 버튼 비활성",
+        "입력 허용 후 오류 문구"
+      ],
+      "blocking": true,
+      "status": "answered",
+      "answer": "허용 외 문자는 입력되지 않는다. 공백만 입력한 경우 저장 버튼은 비활성이다."
+    },
+    {
+      "id": "Q-13",
+      "pattern": "CND",
+      "reqId": "REQ-03",
+      "quote": "편집 화면 최초 진입 시 튜토리얼을 정상 노출한다.",
+      "source": "p.3",
+      "question": "튜토리얼 '최초 진입'의 기준은 계정 단위인가요, 방 단위인가요? (목록에서 새 방 만들기·기존 방 선택 시 노출 여부)",
+      "options": [
+        "계정당 1회",
+        "새 방마다"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "튜토리얼은 계정당 1회만 노출한다."
+    },
+    {
+      "id": "Q-14",
+      "pattern": "CND",
+      "reqId": "REQ-03",
+      "quote": "5/5 단계는 \"완료\" 버튼을 제공한다.",
+      "source": "p.3",
+      "question": "\"완료\" 선택 시 동작은 튜토리얼 닫힘인가요? 다른 후속 동작이 있나요?",
+      "options": [
+        "튜토리얼 닫힘"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "\"완료\" 선택 시 튜토리얼이 닫힌다."
+    },
+    {
+      "id": "Q-15",
+      "pattern": "EXC",
+      "reqId": "REQ-04",
+      "quote": "목록에서 방 선택 시 해당 방의 편집 화면으로 이동한다.",
+      "source": "p.4",
+      "question": "방 로딩 실패(네트워크 끊김·타임아웃) 시 동작과 문구는 무엇인가요? 목록 조회 자체가 실패할 때는요?",
+      "options": [],
+      "blocking": false,
+      "status": "answered",
+      "answer": "방 로딩 실패 시 팝업 \"네트워크 연결을 확인해주세요\"와 \"다시 시도\" 버튼을 노출한다. (목록 조회 실패는 답변 없음)"
+    },
+    {
+      "id": "Q-16",
+      "pattern": "CND",
+      "reqId": "REQ-04",
+      "quote": "",
+      "source": "p.3, p.4",
+      "question": "기존 방을 편집 후 저장하면 새 방이 추가되나요, 덮어쓰나요? 같은 이름의 방을 여러 개 만들 수 있나요?",
+      "options": [
+        "덮어쓰기, 이름 중복 허용"
+      ],
+      "blocking": false,
+      "status": "answered",
+      "answer": "기존 방 편집 후 저장하면 덮어쓴다. 같은 이름의 방을 여러 개 만들 수 있다."
+    }
+  ]
+}
