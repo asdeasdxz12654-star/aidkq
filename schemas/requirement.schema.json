@@ -82,6 +82,19 @@
           "transitions": { "type": "array", "items": { "type": "object" } },
           "data": { "type": "array", "items": { "type": "object" } },
           "integrations": { "type": "array" },
+          "layout": {
+            "type": "array",
+            "description": "배치·순서·고정 영역·말줄임 등 레이아웃 정보",
+            "items": {
+              "type": "object",
+              "required": ["target", "rule", "source"],
+              "properties": {
+                "target": { "type": "string" },
+                "rule": { "type": "string" },
+                "source": { "$ref": "#/$defs/source" }
+              }
+            }
+          },
           "openQuestions": { "type": "array", "items": { "$ref": "#/$defs/questionId" } }
         }
       }
