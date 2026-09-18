@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TestCaseSet",
+  "description": "TC 초안 (STEP 4 출력). 모든 TC는 source 필수",
+  "type": "object",
+  "required": ["testCases"],
+  "properties": {
+    "testCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "conditionId", "item", "precondition", "steps", "expected", "evidence", "priority", "source"],
+        "properties": {
+          "id": { "type": "string" },
+          "conditionId": { "type": "string" },
+          "category": { "type": "array", "items": { "type": "string" } },
+          "item": { "type": "string", "pattern": "확인$" },
+          "precondition": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "steps": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "expected": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["expectedIndex", "quote", "source"],
+              "properties": {
+                "expectedIndex": { "type": "integer", "minimum": 0 },
+                "quote": { "type": ["string", "null"] },
+                "source": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "priority": { "type": "string" },
+          "technique": { "type": "string" },
+          "source": {
+            "type": "object",
+            "properties": {
+              "doc": { "type": ["string", "null"] },
+              "figma": { "type": ["string", "null"] },
+              "rule": { "type": ["string", "null"] }
+            },
+            "anyOf": [
+              { "properties": { "doc": { "type": "string", "minLength": 1 } }, "required": ["doc"] },
+              { "properties": { "figma": { "type": "string", "minLength": 1 } }, "required": ["figma"] },
+              { "properties": { "rule": { "type": "string", "minLength": 1 } }, "required": ["rule"] }
+            ]
+          },
+          "platform": { "type": "array", "items": { "enum": ["AOS", "iOS", "Web"] } },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

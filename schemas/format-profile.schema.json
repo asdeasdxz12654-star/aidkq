@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FormatProfile",
+  "description": "회사 TC 양식 프로파일 (STEP 0 출력)",
+  "type": "object",
+  "required": ["company", "profileVersion", "columns", "priority", "result", "granularity", "examples"],
+  "properties": {
+    "company": { "type": "string" },
+    "profileVersion": { "type": "string" },
+    "sourceSampleCount": { "type": "integer", "minimum": 1 },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": {
+            "enum": ["id", "category1", "category2", "category3", "item", "precondition", "steps", "expected", "priority", "source", "result", "note", "other"]
+          },
+          "pattern": { "type": "string" },
+          "style": { "type": "string" },
+          "example": { "type": "string" },
+          "perPlatform": { "type": "string" }
+        }
+      }
+    },
+    "priority": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "result": { "type": "array", "items": { "type": "string" } },
+    "granularity": {
+      "type": "object",
+      "required": ["unit", "avgExpectedPerTc", "confirmedByUser"],
+      "properties": {
+        "unit": { "type": "string" },
+        "avgExpectedPerTc": { "type": "number" },
+        "maxExpectedPerTc": { "type": "integer" },
+        "confirmedByUser": { "type": "boolean" }
+      }
+    },
+    "idAbbreviations": { "type": "object", "additionalProperties": { "type": "string" } },
+    "terminology": { "type": "object", "additionalProperties": { "type": "string" } },
+    "examples": { "type": "array", "items": { "type": "object" }, "maxItems": 10 }
+  }
+}

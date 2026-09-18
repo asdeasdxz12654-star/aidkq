@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TestConditionSet",
+  "description": "테스트 조건 목록 (STEP 3 출력, 사람 승인 대상)",
+  "type": "object",
+  "required": ["conditions", "exceptionMatrix"],
+  "properties": {
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "reqId", "screen", "text", "technique", "priority", "source", "grounded"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^TCON-\\d{3,}$" },
+          "reqId": { "type": "string" },
+          "screen": { "type": "string" },
+          "text": { "type": "string" },
+          "technique": { "enum": ["화면구성", "동등분할", "경계값", "결정테이블", "상태전이", "유스케이스", "예외"] },
+          "mergedFrom": { "type": "array", "items": { "type": "string" } },
+          "exceptionCode": { "type": ["string", "null"], "pattern": "^EX\\d{2}$" },
+          "precondition": { "type": "array", "items": { "type": "string" } },
+          "priority": { "type": "string" },
+          "source": { "type": "array", "items": { "type": "string" } },
+          "grounded": { "type": "boolean" },
+          "question": { "type": ["string", "null"] },
+          "onHold": { "type": "boolean" },
+          "approved": { "type": ["boolean", "null"], "description": "사람이 채움. 생성 시 null" },
+          "addedByHuman": { "type": "boolean" }
+        },
+        "if": { "properties": { "grounded": { "const": false } } },
+        "then": { "required": ["question"], "properties": { "question": { "type": "string" } } }
+      }
+    },
+    "decisionTables": { "type": "array", "items": { "type": "object" } },
+    "exceptionMatrix": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["screen", "code", "verdict"],
+        "properties": {
+          "screen": { "type": "string" },
+          "code": { "type": "string", "pattern": "^EX\\d{2}$" },
+          "verdict": { "enum": ["적용", "해당없음", "질의필요"] },
+          "reason": { "type": "string" },
+          "conditionId": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

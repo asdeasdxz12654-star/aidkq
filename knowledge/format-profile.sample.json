@@ -1,0 +1,46 @@
+{
+  "company": "샘플사(가상)",
+  "profileVersion": "1.0",
+  "sourceSampleCount": 24,
+  "columns": [
+    { "name": "TC ID", "role": "id", "pattern": "{화면약어}-{3자리}", "example": "3D-001" },
+    { "name": "대분류", "role": "category1", "style": "화면명" },
+    { "name": "중분류", "role": "category2", "style": "기능명" },
+    { "name": "테스트 항목", "role": "item", "style": "~ 확인 (명사형 종결)" },
+    { "name": "사전조건", "role": "precondition", "style": "줄바꿈 구분, 명사형" },
+    { "name": "테스트 절차", "role": "steps", "style": "번호 목록, ~ 선택 / ~ 입력 (명사형)" },
+    { "name": "기대결과", "role": "expected", "style": "번호 목록, ~된다 / ~노출된다 종결, 절차 번호 대응" },
+    { "name": "우선순위", "role": "priority", "style": "상/중/하" },
+    { "name": "요구사항 출처", "role": "source", "style": "기획서 v{버전} p.{페이지} / 피그마 \"{프레임명}\"" },
+    { "name": "AOS", "role": "result", "perPlatform": "AOS" },
+    { "name": "iOS", "role": "result", "perPlatform": "iOS" },
+    { "name": "비고", "role": "note" }
+  ],
+  "priority": ["상", "중", "하"],
+  "result": ["Pass", "Fail", "Block", "N/A"],
+  "granularity": {
+    "unit": "화면 요소 단위 분리",
+    "avgExpectedPerTc": 2.1,
+    "maxExpectedPerTc": 4,
+    "confirmedByUser": false
+  },
+  "idAbbreviations": { "3D방 꾸미기 온보딩": "3D", "전체 메뉴": "MENU", "신규 3D방 편집": "ED", "내 3D방 목록": "LIST" },
+  "terminology": {
+    "탭/클릭/터치": "선택",
+    "팝업/다이얼로그": "팝업",
+    "화면 이동": "이동된다"
+  },
+  "examples": [
+    {
+      "id": "3D-002",
+      "category1": "3D방 꾸미기 온보딩",
+      "category2": "자동 전환",
+      "item": "온보딩 화면 5초 경과 시 자동 전환 확인",
+      "precondition": ["로그인 상태", "3D방 최초 진입", "온보딩 화면 노출 상태"],
+      "steps": ["버튼을 선택하지 않고 5초간 대기"],
+      "expected": ["신규 3D방 편집 화면으로 이동되고 튜토리얼(1/5)이 노출된다"],
+      "priority": "상",
+      "source": "기획서 v1.0 p.2 / 피그마 \"온보딩\""
+    }
+  ]
+}

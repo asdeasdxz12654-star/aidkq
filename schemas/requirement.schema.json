@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RequirementAnalysis",
+  "description": "기획서 구조화 결과 (STEP 1 출력)",
+  "type": "object",
+  "required": ["document", "scope", "screens", "questions"],
+  "$defs": {
+    "source": { "type": "string", "description": "기획서 페이지/섹션, 피그마 프레임, '규칙집: 코드', '질의 Q-xx 답변' 중 하나" },
+    "questionId": { "type": "string", "pattern": "^Q-\\d{2,}$" }
+  },
+  "properties": {
+    "document": {
+      "type": "object",
+      "required": ["title", "version"],
+      "properties": {
+        "title": { "type": "string" },
+        "version": { "type": "string" },
+        "date": { "type": "string" },
+        "changes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "platforms": { "type": "array", "items": { "enum": ["AOS", "iOS", "Web"] } },
+        "minVersions": { "type": "object", "additionalProperties": { "type": "string" } },
+        "outOfScope": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "screens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["reqId", "screen", "elements"],
+        "properties": {
+          "reqId": { "type": "string", "pattern": "^REQ-\\d{2,}$" },
+          "screen": { "type": "string" },
+          "entryPaths": { "type": "array", "items": { "type": "string" } },
+          "elements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "type", "source"],
+              "properties": {
+                "id": { "type": "string" },
+                "type": { "enum": ["button", "input", "text", "list", "image", "toggle", "popup", "toast", "bottomsheet", "other"] },
+                "label": { "type": "string" },
+                "action": { "type": "string" },
+                "enabledWhen": { "type": "string" },
+                "source": { "$ref": "#/$defs/source" }
+              }
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "values", "source"],
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "values": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+                "effect": { "type": "string" },
+                "source": { "$ref": "#/$defs/source" }
+              }
+            }
+          },
+          "inputRules": { "type": "array", "items": { "type": "object" } },
+          "states": { "type": "array", "items": { "type": "object" } },
+          "timers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["event", "source"],
+              "properties": {
+                "event": { "type": "string" },
+                "seconds": { "type": ["number", "null"] },
+                "source": { "$ref": "#/$defs/source" }
+              }
+            }
+          },
+          "transitions": { "type": "array", "items": { "type": "object" } },
+          "data": { "type": "array", "items": { "type": "object" } },
+          "integrations": { "type": "array" },
+          "openQuestions": { "type": "array", "items": { "$ref": "#/$defs/questionId" } }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "pattern", "question", "blocking", "status"],
+        "properties": {
+          "id": { "$ref": "#/$defs/questionId" },
+          "pattern": { "enum": ["AMB", "NUM", "TXT", "CND", "REF", "CON", "EXC", "FIG"] },
+          "reqId": { "type": "string" },
+          "quote": { "type": "string" },
+          "source": { "$ref": "#/$defs/source" },
+          "question": { "type": "string" },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "blocking": { "type": "boolean" },
+          "status": { "enum": ["open", "answered", "dropped"] },
+          "answer": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}
