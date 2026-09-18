@@ -26,7 +26,11 @@
               "properties": {
                 "expectedIndex": { "type": "integer", "minimum": 0 },
                 "quote": { "type": ["string", "null"] },
-                "source": { "type": ["string", "null"] }
+                "source": { "type": ["string", "null"] },
+                "inference": {
+                  "type": ["string", "null"],
+                  "description": "인용문이 기대결과를 직접 말하지 않고 유추한 경우, 무엇을 유추했는지와 질의 번호. 직접 근거면 생략하거나 null"
+                }
               }
             }
           },

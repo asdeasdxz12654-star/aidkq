@@ -29,6 +29,18 @@ if (err.length) {
   process.exit(1);
 }
 
+// 이미 표시된 채택 O/X는 보존한다 (재생성이 사람 승인을 지우지 않도록)
+const prevPath = __dirname + "/03a-approval.md";
+const prev = fs.existsSync(prevPath) ? fs.readFileSync(prevPath, "utf8") : "";
+const marks = new Map([...prev.matchAll(/^\| ([OXox]) \| (TCON-\d+) \|/gm)].map((m) => [m[2], m[1].toUpperCase()]));
+const mark = (c) => marks.get(c.id) || "☐";
+if (marks.size) console.log(`기존 채택 표시 ${marks.size}건 보존`);
+const nO = [...marks.values()].filter((v) => v === "O").length;
+const nX = marks.size - nO;
+const resultLine = marks.size
+  ? `**승인 결과 (2026-09-19)**: 사용자 지시 — 근거 있는 조건 ${nO}건 O, 근거 없는 조건 ${nX}건 X(질의로 전달). 03b 입력은 O ${nO}건.\n\n`
+  : "";
+
 const P = { 상: 0, 중: 1, 하: 2 };
 const S = ["전체 메뉴", "3D방 꾸미기 온보딩", "신규 3D방 편집", "내 3D방 목록", "전체 흐름"];
 const sort = (a) => a.sort((x, y) => P[x.priority] - P[y.priority] || S.indexOf(x.screen) - S.indexOf(y.screen) || x.id.localeCompare(y.id));
@@ -52,20 +64,20 @@ const count = (k) => Object.entries(d.conditions.reduce((a, c) => ((a[c[k]] = (a
 const md = `# 03a 승인표 — 2026-09-18 dry run
 
 입력: \`02-answered.json\` (02 출력 + 질의 16건 답변 반영). 원본: \`03a-output.json\` · 생성: \`node make-approval.js\`
-**승인 방법**: \`채택\` 열에 O/X를 적는다. 빠진 조건은 맨 아래 "추가 조건"에 적는다. O로 표시한 조건만 03b 입력이 된다.
+${resultLine}**승인 방법**: \`채택\` 열에 O/X를 적는다. 빠진 조건은 맨 아래 "추가 조건"에 적는다. O로 표시한 조건만 03b 입력이 된다.
 
 ## 1. 근거 있는 조건 (${g.length}건)
 
 | 채택 | ID | 화면 | 테스트 조건 | 기법 | 근거 | 우선순위 | 비고 |
 |---|---|---|---|---|---|---|---|
-${g.map((c) => `| ☐ | ${c.id} | ${c.screen} | ${c.text} | ${tech(c)} | ${c.source.join(", ")} | ${c.priority} | ${c.mergedFrom.length ? "병합: " + c.mergedFrom.join("+") : ""} |`).join("\n")}
+${g.map((c) => `| ${mark(c)} | ${c.id} | ${c.screen} | ${c.text} | ${tech(c)} | ${c.source.join(", ")} | ${c.priority} | ${c.mergedFrom.length ? "병합: " + c.mergedFrom.join("+") : ""} |`).join("\n")}
 
 ## 2. 근거 없는 조건 → 질의 필요 (${u.length}건)
 기획서·답변·규칙집에 근거가 없다. 채택하려면 먼저 질의에 답하거나, X로 두고 질의만 전달한다.
 
 | 채택 | ID | 화면 | 테스트 조건 | 기법 | 질의 | 우선순위 |
 |---|---|---|---|---|---|---|
-${u.map((c) => `| ☐ | ${c.id} | ${c.screen} | ${c.text} | ${tech(c)} | ${c.question} | ${c.priority} |`).join("\n")}
+${u.map((c) => `| ${mark(c)} | ${c.id} | ${c.screen} | ${c.text} | ${tech(c)} | ${c.question} | ${c.priority} |`).join("\n")}
 
 ## 3. 예외 체크리스트 — 질의 필요 판정 (${qm.length}건)
 | 화면 | 코드 | 사유 | 조건 |
